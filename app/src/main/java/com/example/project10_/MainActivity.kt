@@ -31,19 +31,38 @@ class MainActivity : AppCompatActivity() {
             val title = data?.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
             val description = data?.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
 
-            if (!title.isNullOrEmpty() && !description.isNullOrEmpty()) {
+            if (title.isNullOrEmpty() || description.isNullOrEmpty()) {
+                Toast.makeText(this, "Title or description cannot be empty", Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult // Exit if essential data is missing
+            }
+
+            val noteId = data?.getLongExtra(AddEditNoteActivity.EXTRA_NOTE_ID, -1L)
+
+            if (noteId != null && noteId != -1L) { // Existing note was edited
+                val noteIndex = notesList.indexOfFirst { it.id == noteId }
+                if (noteIndex != -1) {
+                    notesList[noteIndex] = notesList[noteIndex].copy(
+                        title = title,
+                        description = description,
+                        timestamp = System.currentTimeMillis()
+                    )
+                    Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Error updating note: Not found", Toast.LENGTH_SHORT).show()
+                }
+            } else { // New note
                 val newId = (notesList.maxOfOrNull { it.id } ?: 0L) + 1L
                 val newNote = Note(
                     id = newId,
                     title = title,
                     description = description,
                     timestamp = System.currentTimeMillis(),
-                    imagePath = null // Default for new notes
+                    imagePath = null
                 )
                 notesList.add(newNote)
-                noteAdapter.updateNotes(notesList.toList()) // Update adapter
+                Toast.makeText(this, "Note created successfully!", Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(this, "Note saved successfully!", Toast.LENGTH_SHORT).show()
+            noteAdapter.updateNotes(notesList.toList()) // Refresh list in both cases
         }
     }
 
@@ -66,7 +85,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Initialize and set adapter
-        noteAdapter = NoteAdapter(notesList.toMutableList()) // Initialize with notesList
+        noteAdapter = NoteAdapter(notesList.toMutableList()) { clickedNote ->
+            // This is the onItemClick lambda
+            val intent = Intent(this, AddEditNoteActivity::class.java)
+            // Pass note data to AddEditNoteActivity using the consolidated keys
+            intent.putExtra(AddEditNoteActivity.EXTRA_NOTE_ID, clickedNote.id)
+            intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, clickedNote.title)
+            intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, clickedNote.description)
+
+            addEditNoteLauncher.launch(intent) // Use the existing launcher
+        }
         recyclerViewNotes.adapter = noteAdapter
 
         // Initialize UI elements for click listeners

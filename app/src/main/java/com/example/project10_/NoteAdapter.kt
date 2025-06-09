@@ -7,8 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class NoteAdapter(private var notes: MutableList<Note>) : // Changed to var and MutableList
-    RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
+class NoteAdapter(
+    private var notes: MutableList<Note>,
+    private val onItemClick: (Note) -> Unit // Added click listener parameter
+) : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -45,5 +47,15 @@ class NoteAdapter(private var notes: MutableList<Note>) : // Changed to var and 
         val titleTextView: TextView = itemView.findViewById(R.id.textViewNoteTitle)
         val descriptionTextView: TextView = itemView.findViewById(R.id.textViewNoteDescription)
         val thumbnailImageView: ImageView = itemView.findViewById(R.id.imageViewThumbnail)
+
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val note = notes[position]
+                    onItemClick(note)
+                }
+            }
+        }
     }
 }
