@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="176dp"
+    android:background="@color/search_bar_background"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"> <!-- Ensures text/icon colors are light by default if not overridden -->
+
+    <ImageView
+        android:id="@+id/imageViewDrawerHeaderIcon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="8dp"
+        android:src="@android:drawable/ic_dialog_info"
+        android:contentDescription="App Icon" />
+
+    <TextView
+        android:id="@+id/textViewDrawerHeaderTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notes App"
+        android:textColor="@color/light_text"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
