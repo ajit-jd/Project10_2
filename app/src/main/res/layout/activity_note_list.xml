@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000080">
+    android:background="@color/navy_blue">
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Notes"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textColor="@color/light_text"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,40 +21,47 @@
 
     <ImageView
         android:id="@+id/imageViewMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:src="@android:drawable/ic_menu_sort_by_size"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@android:color/white"/>
+        app:tint="@color/light_text"/>
 
     <ImageView
         android:id="@+id/imageViewAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:src="@android:drawable/ic_input_add"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@android:color/white"/>
+        app:tint="@color/light_text"/>
 
     <EditText
         android:id="@+id/editTextSearch"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/rounded_edittext_background"
+        android:background="@drawable/search_bar_rounded_background"
         android:drawableStart="@android:drawable/ic_menu_search"
-        android:drawablePadding="8dp"
+        app:drawableTint="@color/search_bar_icon_color"
+        android:drawablePadding="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:gravity="center_vertical"
         android:hint="Search"
         android:inputType="text"
-        android:padding="8dp"
-        android:textColorHint="@android:color/darker_gray"
+        android:maxLines="1"
+        android:textColor="@color/light_text"
+        android:textColorHint="@color/description_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
@@ -63,7 +70,8 @@
         android:id="@+id/recyclerViewNotes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/buttonNewNote"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,29 +80,40 @@
     <Button
         android:id="@+id/buttonNewNote"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="#007bff"
+        android:background="@drawable/button_new_note_background"
         android:text="New Note"
-        android:textColor="@android:color/white"
+        android:textColor="@color/light_text"
+        android:textSize="14sp"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buttonClipWebpage"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical_center"
+        app:layout_constraintWidth_percent="0.4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"/>
 
     <Button
         android:id="@+id/buttonClipWebpage"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_height="44dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="#0056b3"
+        android:background="@drawable/button_clip_webpage_background"
         android:text="Clip Webpage"
-        android:textColor="@android:color/white"
+        android:textColor="@color/light_text"
+        android:textSize="14sp"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/buttonNewNote" />
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical_center"
+        app:layout_constraintWidth_percent="0.4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

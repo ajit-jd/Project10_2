@@ -4,7 +4,7 @@
         <!-- Customize your theme here. This will apply to both light and dark modes unless overridden. -->
         <item name="android:windowBackground">@color/navy_blue</item>
         <item name="android:textColorPrimary">@color/light_text</item>
-        <item name="android:textColorSecondary">@color/gray_text</item>
+        <item name="android:textColorSecondary">@color/description_text_color</item>
 
         <!-- Optional: Set theme colors that components might use by default -->
         <!-- <item name="colorPrimary">@color/bright_blue</item> -->

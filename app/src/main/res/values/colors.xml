@@ -3,9 +3,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="navy_blue">#000080</color>
-    <color name="light_text">#E0E0E0</color>
-    <color name="gray_text">#A0A0A0</color>
-    <color name="bright_blue">#007BFF</color>
-    <color name="darker_blue">#0056B3</color>
+    <color name="navy_blue">#0D0D2B</color> <!-- Updated -->
+    <color name="light_text">#FFFFFF</color> <!-- Updated -->
+    <color name="gray_text">#A0A0A0</color> <!-- Kept for now -->
+    <color name="description_text_color">#C5C5D2</color> <!-- Added -->
+    <color name="bright_blue">#4A6CF7</color> <!-- Updated -->
+    <color name="darker_blue">#1A1A3C</color> <!-- Updated -->
+    <color name="search_bar_background">#1A1A3C</color> <!-- Added -->
+    <color name="search_bar_icon_color">#AAAAFF</color> <!-- Added -->
 </resources>

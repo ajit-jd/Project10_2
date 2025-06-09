@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/bright_blue" /> <!-- #4A6CF7 -->
+    <corners android:radius="22dp" /> <!-- Half of 44dp height for pill shape -->
+</shape>

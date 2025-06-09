@@ -1,5 +1,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="@android:color/transparent" /> <!-- Or a placeholder color -->
+    <solid android:color="@color/search_bar_background" /> <!-- #1A1A3C -->
     <corners android:radius="12dp" />
 </shape>
