@@ -1,14 +1,25 @@
 package com.example.project10_
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
+
+    private val addEditNoteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // For now, just show a toast. Later, this is where you'd refresh the note list.
+            Toast.makeText(this, "Note saved successfully!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Set the content view to the new note list layout
@@ -63,7 +74,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         newNoteButton.setOnClickListener {
-            Toast.makeText(this, "New Note button clicked", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, AddEditNoteActivity::class.java)
+            addEditNoteLauncher.launch(intent)
         }
 
         clipWebpageButton.setOnClickListener {
