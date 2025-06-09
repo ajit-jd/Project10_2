@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class NoteAdapter(private val notes: List<Note>) :
+class NoteAdapter(private var notes: MutableList<Note>) : // Changed to var and MutableList
     RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -33,6 +33,12 @@ class NoteAdapter(private val notes: List<Note>) :
 
     override fun getItemCount(): Int {
         return notes.size
+    }
+
+    fun updateNotes(newNotes: List<Note>) {
+        this.notes.clear()
+        this.notes.addAll(newNotes)
+        notifyDataSetChanged() // Notifies the RecyclerView to re-render
     }
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

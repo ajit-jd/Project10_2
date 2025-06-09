@@ -22,9 +22,27 @@ class MainActivity : AppCompatActivity() {
     // private lateinit var toolbar: MaterialToolbar // Not using a dedicated toolbar for drawer toggle
     // private lateinit var toggle: ActionBarDrawerToggle // Not using toggle for now
 
+    private val notesList = mutableListOf<Note>()
+    private lateinit var noteAdapter: NoteAdapter // Declare as member variable
+
     private val addEditNoteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // For now, just show a toast. Later, this is where you'd refresh the note list.
+            val data: Intent? = result.data
+            val title = data?.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
+            val description = data?.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+
+            if (!title.isNullOrEmpty() && !description.isNullOrEmpty()) {
+                val newId = (notesList.maxOfOrNull { it.id } ?: 0L) + 1L
+                val newNote = Note(
+                    id = newId,
+                    title = title,
+                    description = description,
+                    timestamp = System.currentTimeMillis(),
+                    imagePath = null // Default for new notes
+                )
+                notesList.add(newNote)
+                noteAdapter.updateNotes(notesList.toList()) // Update adapter
+            }
             Toast.makeText(this, "Note saved successfully!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -40,33 +58,15 @@ class MainActivity : AppCompatActivity() {
         val recyclerViewNotes = findViewById<RecyclerView>(R.id.recyclerViewNotes)
         recyclerViewNotes.layoutManager = LinearLayoutManager(this)
 
-        // Create sample data
-        val sampleNotes = listOf(
-            Note(
-                id = 1L,
-                title = "Meeting Notes",
-                description = "Discussed project milestones and next steps.",
-                timestamp = System.currentTimeMillis(),
-                imagePath = null
-            ),
-            Note(
-                id = 2L,
-                title = "Grocery List",
-                description = "Milk, eggs, bread, cheese, and vegetables.",
-                timestamp = System.currentTimeMillis() - 1000 * 60 * 60, // An hour ago
-                imagePath = null
-            ),
-            Note(
-                id = 3L,
-                title = "Travel Plans",
-                description = "Flights, accommodation, and itinerary for the upcoming trip.",
-                timestamp = System.currentTimeMillis() - 1000 * 60 * 60 * 24, // A day ago
-                imagePath = null
-            )
-        )
+        // Populate notesList if it's empty (e.g., on first create)
+        if (notesList.isEmpty()) {
+            notesList.add(Note(id = 1L, title = "Meeting Notes", description = "Discussed project milestones.", timestamp = System.currentTimeMillis(), imagePath = null))
+            notesList.add(Note(id = 2L, title = "Grocery List", description = "Milk, eggs, bread.", timestamp = System.currentTimeMillis() - 100000, imagePath = null))
+            notesList.add(Note(id = 3L, title = "Travel Plans", description = "Book flights and hotel.", timestamp = System.currentTimeMillis() - 200000, imagePath = null))
+        }
 
-        // Create and set adapter
-        val noteAdapter = NoteAdapter(sampleNotes)
+        // Initialize and set adapter
+        noteAdapter = NoteAdapter(notesList.toMutableList()) // Initialize with notesList
         recyclerViewNotes.adapter = noteAdapter
 
         // Initialize UI elements for click listeners

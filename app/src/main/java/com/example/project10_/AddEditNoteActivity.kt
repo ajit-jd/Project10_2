@@ -1,6 +1,7 @@
 package com.example.project10_
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.EditText
@@ -12,6 +13,11 @@ class AddEditNoteActivity : AppCompatActivity() {
 
     private lateinit var editTextNoteTitle: EditText
     private lateinit var editTextNoteContent: EditText
+
+    companion object {
+        const val EXTRA_TITLE = "com.example.project10_.EXTRA_TITLE"
+        const val EXTRA_DESCRIPTION = "com.example.project10_.EXTRA_DESCRIPTION"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +50,10 @@ class AddEditNoteActivity : AppCompatActivity() {
                 val toastMessage = "Save clicked! Title: $title, Content: $content"
                 Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show()
 
-                // Here you would typically save the note to a database or ViewModel
-                setResult(Activity.RESULT_OK)
+                val resultIntent = Intent()
+                resultIntent.putExtra(EXTRA_TITLE, title)
+                resultIntent.putExtra(EXTRA_DESCRIPTION, content)
+                setResult(Activity.RESULT_OK, resultIntent)
                 finish()
                 true
             }
