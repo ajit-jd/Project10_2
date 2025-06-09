@@ -22,8 +22,9 @@ class MainActivity : AppCompatActivity() {
     // private lateinit var toolbar: MaterialToolbar // Not using a dedicated toolbar for drawer toggle
     // private lateinit var toggle: ActionBarDrawerToggle // Not using toggle for now
 
-    private val notesList = mutableListOf<Note>()
+    // private val notesList = mutableListOf<Note>() // Removed in-memory list
     private lateinit var noteAdapter: NoteAdapter // Declare as member variable
+    private lateinit var noteDao: NoteDao
 
     private val addEditNoteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -39,30 +40,31 @@ class MainActivity : AppCompatActivity() {
             val noteId = data?.getLongExtra(AddEditNoteActivity.EXTRA_NOTE_ID, -1L)
 
             if (noteId != null && noteId != -1L) { // Existing note was edited
-                val noteIndex = notesList.indexOfFirst { it.id == noteId }
-                if (noteIndex != -1) {
-                    notesList[noteIndex] = notesList[noteIndex].copy(
-                        title = title,
-                        description = description,
-                        timestamp = System.currentTimeMillis()
-                    )
-                    Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Error updating note: Not found", Toast.LENGTH_SHORT).show()
+                val updatedNote = Note(
+                    id = noteId, // Use the existing ID
+                    title = title,
+                    description = description,
+                    timestamp = System.currentTimeMillis(),
+                    imagePath = null // Assuming imagePath is not editable for now or handled elsewhere
+                )
+                lifecycleScope.launch {
+                    noteDao.update(updatedNote)
                 }
+                Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_SHORT).show()
             } else { // New note
-                val newId = (notesList.maxOfOrNull { it.id } ?: 0L) + 1L
                 val newNote = Note(
-                    id = newId,
+                    // id = 0L, // Handled by default in Note data class for autoGenerate
                     title = title,
                     description = description,
                     timestamp = System.currentTimeMillis(),
                     imagePath = null
                 )
-                notesList.add(newNote)
+                lifecycleScope.launch {
+                    noteDao.insert(newNote)
+                }
                 Toast.makeText(this, "Note created successfully!", Toast.LENGTH_SHORT).show()
             }
-            noteAdapter.updateNotes(notesList.toList()) // Refresh list in both cases
+            // noteAdapter.updateNotes(notesList.toList()) // Removed: Flow observer will update UI
         }
     }
 
@@ -73,19 +75,16 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
 
+        // Initialize Database and DAO
+        val database = AppDatabase.getDatabase(applicationContext)
+        noteDao = database.noteDao()
+
         // Initialize RecyclerView
         val recyclerViewNotes = findViewById<RecyclerView>(R.id.recyclerViewNotes)
-        recyclerViewNotes.layoutManager = LinearLayoutManager(this)
-
-        // Populate notesList if it's empty (e.g., on first create)
-        if (notesList.isEmpty()) {
-            notesList.add(Note(id = 1L, title = "Meeting Notes", description = "Discussed project milestones.", timestamp = System.currentTimeMillis(), imagePath = null))
-            notesList.add(Note(id = 2L, title = "Grocery List", description = "Milk, eggs, bread.", timestamp = System.currentTimeMillis() - 100000, imagePath = null))
-            notesList.add(Note(id = 3L, title = "Travel Plans", description = "Book flights and hotel.", timestamp = System.currentTimeMillis() - 200000, imagePath = null))
-        }
+        recyclerViewNotes.layoutManager = LinearLayoutManager(this) // Ensure layout manager is set
 
         // Initialize and set adapter
-        noteAdapter = NoteAdapter(notesList.toMutableList()) { clickedNote ->
+        noteAdapter = NoteAdapter(mutableListOf()) { clickedNote -> // Initialize with empty list
             // This is the onItemClick lambda
             val intent = Intent(this, AddEditNoteActivity::class.java)
             // Pass note data to AddEditNoteActivity using the consolidated keys
@@ -95,7 +94,14 @@ class MainActivity : AppCompatActivity() {
 
             addEditNoteLauncher.launch(intent) // Use the existing launcher
         }
-        recyclerViewNotes.adapter = noteAdapter
+        recyclerViewNotes.adapter = noteAdapter // Ensure adapter is set after initialization
+
+        // Observe Notes from Database
+        lifecycleScope.launch {
+            noteDao.getAllNotes().collectLatest { notesFromDb ->
+                noteAdapter.updateNotes(notesFromDb)
+            }
+        }
 
         // Initialize UI elements for click listeners
         val menuIcon = findViewById<ImageView>(R.id.imageViewMenu)

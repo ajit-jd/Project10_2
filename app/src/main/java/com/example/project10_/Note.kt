@@ -1,9 +1,14 @@
 package com.example.project10_
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "notes_table")
 data class Note(
-    val id: Long, // Added an ID field, common for database entities
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0L, // Default to 0 for Room to auto-generate IDs for new notes
     val title: String,
     val description: String,
-    val timestamp: Long, // Added timestamp for sorting or display
-    val imagePath: String? = null // Optional path to an image file
+    val timestamp: Long,
+    val imagePath: String? = null
 )
